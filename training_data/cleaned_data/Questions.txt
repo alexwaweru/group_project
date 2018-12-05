@@ -2606,8 +2606,3 @@
  Can you name some details that are sent to the block of bitcoin? 
  How do the public key and private key generation work? 
  Can you write a smart contract for "Hello Word" in solidity?
- 
- 
- 
- 
- 
