@@ -40,15 +40,16 @@ def train(documents, classes):
 
 def predict(x_train, y_train, input_file):
     
-    # train the model with the provided 
+    # train the model with the provided document and labelled classes
     mNB = train(x_train, y_train)
     test_doc = to_array(input_file)
+
+    # predict the respective classes for the test documents.
     y_pred = mNB.predict(count_vectorizer.transform(test_doc))
 
     fw = open("topic-ouput.txt", 'w+')
     for pred in  y_pred:
         fw.write(pred)
-    
     fw.close()
 
 
