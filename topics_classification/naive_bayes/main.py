@@ -47,7 +47,7 @@ def predict(x_train, y_train, input_file):
     # predict the respective classes for the test documents.
     y_pred = mNB.predict(count_vectorizer.transform(test_doc))
 
-    fw = open("topic-ouput.txt", 'w+')
+    fw = open("../../topic_results.txt", 'w+')
     for pred in  y_pred:
         fw.write(pred)
     fw.close()

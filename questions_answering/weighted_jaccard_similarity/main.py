@@ -3,10 +3,6 @@ import numpy as np
 from collections import Counter
 
 # The files containing clean training data
-questions_file_name = "../../training_data/cleaned_data/Questions.txt"
-answers_file_name = "../../training_data/cleaned_data/Answers.txt"
-topics_file_name = "../../training_data/cleaned_data/Topics.txt"
-
 
 def answer(document, questions_filename, answers_filename):
     documents, matrix = create_word_vector(questions_filename)
@@ -29,8 +25,8 @@ def answer(document, questions_filename, answers_filename):
         answers_file.close()
     except IOError:
         logging.exception('')
-    print(max_doc_idx)
-    return answers[max_doc_idx]
+
+    # return answers[max_doc_idx]
 
 
 def vectorize(document, matrix):
@@ -82,5 +78,5 @@ def jaccard_similarity(a, b):
     return intersection_cardinality/float(union_cardinality)
 
 
-if __name__ == "__main__":
-    print(answer(" Who is the head of state of Ghana?", questions_file_name, answers_file_name))
+# if __name__ == "__main__":
+#     print(answer(" Who is the head of state of Ghana?", questions_file_name, answers_file_name))
