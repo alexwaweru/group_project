@@ -43,7 +43,7 @@ def predict(x_train, y_train, input_file):
     # train the model with the provided 
     mNB = train(x_train, y_train)
     test_doc = to_array(input_file)
-    y_pred = multinomialNB.predict(count_vectorizer.transform(test_doc))
+    y_pred = mNB.predict(count_vectorizer.transform(test_doc))
 
     fw = open("topic-ouput.txt", 'w+')
     for pred in  y_pred:
