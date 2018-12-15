@@ -6,35 +6,58 @@ from collections import Counter
 questions_file_name = "../../training_data/cleaned_data/Questions.txt"
 answers_file_name = "../../training_data/cleaned_data/Answers.txt"
 topics_file_name = "../../training_data/cleaned_data/Topics.txt"
+results_file_name = "../../topic_results.txt"
 
 
-def k_nearest_neighbour(document, k, questions_filename, topics_filename):
+def test(test_filename):
+    test_sentences = []
+    try:
+        testfile = open(test_filename, 'r')
+        for sentence in (testfile.readlines()):
+            test_sentences.append(sentence)
+    except IOError:
+        logging.exception('')
+    k_nearest_neighbour(test_sentences)
+
+
+def k_nearest_neighbour(test_sentences,k=10, questions_filename=questions_file_name, topics_filename=topics_file_name):
     """ Takes a document, a integer k, questions filename and topics filename as inputs.
     Returns a topic which the document belongs to.
     """
     N, documents, topics, matrix = create_word_vector(questions_filename, topics_filename)
-    similarities = {}
-    """ This section calculates the similarity index between the test doc and each doc in the training set"""
-    a = tf_idf(document, matrix, N)     #Generate a tf-idf vector for the test document
-    for doc in documents:
-        b = tf_idf(doc, matrix, N)   #Generate a tf-idf vector for a document in the training set
-        similarity = cosine_similarity(a, b)    #Calculate the cosine similarity 
-        key = doc
-        value = similarity
-        similarities[key] = value   #Store the similarities in a dictionary
-    """ This section gets the k-nearests neighbours based on cosine similarity"""
-    sorted_similarities = sorted(similarities.items(), key=lambda t: t[1], reverse=True)    #Sort the similarities dict
-    k_nearest_neighbours1 = sorted_similarities[:k]     #Get the k most similar neighbours
-    k_nearest_neighbours = []
-    for item in k_nearest_neighbours1:
-        k_nearest_neighbours.append(item[0])
-    """ This section gets the topics that the k-nearest questions belong to"""
-    k_nearest_topics = []
-    for i in range(len(documents)):
-        if documents[i] in  k_nearest_neighbours:
-            k_nearest_topics.append(topics[i])
-    k_nearest_topics = Counter(k_nearest_topics)
-    return k_nearest_topics.most_common(1)[0][0]    #Return the topic that is most common among the k neighbors
+    """ This section calculates the similarity index between the test docs and each doc in the training set"""
+    answers = []
+    for sentence in test_sentences:
+        similarities = {}
+        a = tf_idf(sentence, matrix, N)     #Generate a tf-idf vector for the test document
+        for doc in documents:
+            b = tf_idf(doc, matrix, N)   #Generate a tf-idf vector for a document in the training set
+            similarity = cosine_similarity(a, b)    #Calculate the cosine similarity 
+            key = doc
+            value = similarity
+            similarities[key] = value   #Store the similarities in a dictionary
+        """ This section gets the k-nearests neighbours based on cosine similarity"""
+        sorted_similarities = sorted(similarities.items(), key=lambda t: t[1], reverse=True)    #Sort the similarities dict
+        k_nearest_neighbours1 = sorted_similarities[:k]     #Get the k most similar neighbours
+        k_nearest_neighbours = []
+        for item in k_nearest_neighbours1:
+            k_nearest_neighbours.append(item[0])
+        """ This section gets the topics that the k-nearest questions belong to"""
+        k_nearest_topics = []
+        for i in range(len(documents)):
+            if documents[i] in  k_nearest_neighbours:
+                k_nearest_topics.append(topics[i])
+        k_nearest_topics = Counter(k_nearest_topics)
+        answers.append(k_nearest_topics.most_common(1)[0][0])    #Return the topic that is most common among the k neighbors
+    """This section writes the answers into a file"""
+    try:
+        results_file = open(results_file_name, 'w+')
+        for answer in answers:
+            results_file.write(answer)
+        results_file.close()
+    except IOError:
+        logging.exception('')
+
 
 
 def tf_idf(document, matrix, N):
@@ -100,4 +123,4 @@ def cosine_similarity(a, b):
 
 
 if __name__ == "__main__":
-    print(test(documents_file, 10, questions_file_name, topics_file_name))
+    test("test_file.txt")
